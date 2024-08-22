@@ -10,18 +10,20 @@
 
 export class Kata {
   static whatCentury(year: string): string {
-    let newYear = year.split("");
-    let str = ''
-    switch (newYear[1]) {
-      case '0': str = `${parseInt(newYear.slice(0, 2).join("")) + 1}st`;
-      case '1': str = `${parseInt(newYear.slice(0, 2).join("")) + 1}st`;
-      case '2': str = `${parseInt(newYear.slice(0, 2).join("")) + 1}nd`;
-      case '3': str = `${parseInt(newYear.slice(0, 2).join("")) + 1}rd`;
-      default: str = `${parseInt(newYear.slice(0, 2).join("")) + 1}th`;
-    }
+    const century = Math.ceil(parseInt(year) / 100);
+    if (century > 10 && century < 20) return century + "th";
 
-    return str;
+    switch (century % 10) {
+      case 1:
+        return century + "st";
+      case 2:
+        return century + "nd";
+      case 3:
+        return century + "rd";
+      default:
+        return century + "th";
+    }
   }
 }
 
-console.log(Kata.whatCentury("2011"));
+console.log(Kata.whatCentury("2000"));
