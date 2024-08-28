@@ -41,56 +41,41 @@
 // The awesomePhrases array will always be provided, and will always be an array, but may be empty. (Not everyone thinks numbers spell funny words...)
 // You should only ever output 0, 1, or 2.
 
-
-
 export class Kata {
   static isInteresting(num: number, awesomePhrases: number[]) {
-    const isIncrementSeq = (num: number) =>
-      num.toString().split("").sort().join("") === num.toString();
+    const tests = [
+      function (n: number) {
+        return /^\d00+$/.test(n.toString());
+      },
+      function (n: number) {
+        return /^(\d)\1+$/.test(n.toString());
+      },
+      function (n: number) {
+        return RegExp(n.toString()).test("1234567890");
+      },
+      function (n: number) {
+        return RegExp(n.toString()).test("9876543210");
+      },
+      function (n: number) {
+        return n + "" == (n + "").split("").reverse().join("");
+      },
+      function (n: number) {
+        return awesomePhrases.some(function (p) {
+          return p == n;
+        });
+      },
+    ];
 
-    const isDecrementSeq = (num: number) =>
-      num.toString().split("").sort().reverse().join("") === num.toString();
+    let interesting = 0;
 
-    const isPalindrome = (num: number) =>
-      num.toString() === num.toString().split("").reverse().join("");
+    tests.some(function (test) {
+      if (num > 99 && test(num)) return (interesting = 2);
+      else if ((num > 98 && test(num + 1)) || (num > 97 && test(num + 2)))
+        interesting = 1;
+    });
 
-    const isInAwesomePhrases = (num: number) => awesomePhrases.includes(num);
-
-    let tries = 0;
-    let returnVal;
-
-    do {
-      if (num < 100) {
-        returnVal = 0;
-        break;
-      }
-      if (num % 100 === 0) {
-        returnVal = 2;
-        break;
-      }
-      if (num % 100 === (num % 10) + (num % 10) * 10) {
-        returnVal = 2;
-        break;
-      }
-      if (isIncrementSeq(num) || isDecrementSeq(num)) {
-        returnVal = 2;
-        break;
-      }
-      if (isPalindrome(num)) {
-        returnVal = 2;
-        break;
-      }
-      if (isInAwesomePhrases(num)) {
-        returnVal = 2;
-        break;
-      }
-
-      num++;
-      tries++;
-    } while (tries <= 2);
-
-    return tries === 0 ? returnVal : 1;
+    return interesting;
   }
 }
 
-console.log(Kata.isInteresting(98, []));
+console.log(Kata.isInteresting(1111, []));
